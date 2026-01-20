@@ -1,36 +1,31 @@
 import os
 import numpy as np
 from osgeo import gdal
-from qgis.core import (
-    QgsProject,
-    QgsVectorLayer,
-    QgsField,
-    QgsFeature
-)
+from qgis.core import QgsProject, QgsVectorLayer, QgsField, QgsFeature
 from PyQt5.QtCore import QVariant
 
-# ============================================================
+# ------------------------
 # INPUT FOLDERS
-# ============================================================
+# ------------------------
 folders = [
     {
-        "path": r"D:\MODIS_Kanha_Moniter_2010_2011\GEE_GeoTiff\MODIS_NDVI_TIFS",
-        "sensor": "MODIS"
+        "path": r"D:\Landsat_Kanha_Moniter_2015_2016\USGS\Landsat_8_9\Mask\NDVI",
+        "sensor": "Landsat8/9 (OLI)"
     }
 ]
 
-# ============================================================
+# ------------------------
 # USE LOADED AOI VECTOR LAYER
-# ============================================================
+# ------------------------
+# Replace 'north_west_zone' with the name of your loaded shapefile layer in QGIS
 aoi_layers = QgsProject.instance().mapLayersByName("kanha_north_west")
 if not aoi_layers:
-    raise Exception("❌ AOI layer 'kanha_north_west' not found in QGIS")
-
+    raise Exception("AOI layer not found in QGIS")
 aoi_layer = aoi_layers[0]
 
-# ============================================================
-# CREATE MEMORY LAYER FOR OUTPUT TABLE
-# ============================================================
+# ------------------------
+# CREATE MEMORY LAYER FOR RESULTS
+# ------------------------
 layer = QgsVectorLayer("None", "nw_kanha_table", "memory")
 pr = layer.dataProvider()
 
@@ -42,12 +37,11 @@ pr.addAttributes([
     QgsField("median_ndvi", QVariant.Double),
     QgsField("landsat", QVariant.String)
 ])
-
 layer.updateFields()
 
-# ============================================================
-# PROCESS MODIS NDVI RASTERS
-# ============================================================
+# ------------------------
+# PROCESS RASTERS
+# ------------------------
 for entry in folders:
     folder = entry["path"]
     sensor = entry["sensor"]
@@ -56,17 +50,14 @@ for entry in folders:
 
     for file in files:
         try:
-            # ------------------------------------------------
-            # EXTRACT DATE FROM MODIS FILENAME
-            # MODIS_NDVI_YYYY_MM_DD.tif
-            # ------------------------------------------------
-            name = os.path.splitext(file)[0]
-            parts = name.split("_")
-
-            year = int(parts[2])
-            month = int(parts[3])
-            day = int(parts[4])
-
+            # ------------------------
+            # EXTRACT DATE
+            # ------------------------
+            parts = file.split("_")
+            date_part = parts[3]  # YYYYMMDD
+            year = int(date_part[0:4])
+            month = int(date_part[4:6])
+            day = int(date_part[6:8])
             date_str = f"{day:02d}-{month:02d}-{year}"
 
             raster_path = os.path.join(folder, file)
@@ -74,14 +65,14 @@ for entry in folders:
             if ds is None:
                 continue
 
-            # ------------------------------------------------
-            # CLIP USING AOI
-            # ------------------------------------------------
+            # ------------------------
+            # CLIP USING LOADED AOI
+            # ------------------------
             clipped = gdal.Warp(
                 "",
                 ds,
                 format="MEM",
-                cutlineDSName=aoi_layer.source(),
+                cutlineDSName=aoi_layer.source(),  # use the loaded layer's source path
                 cropToCutline=True,
                 dstNodata=np.nan
             )
@@ -89,21 +80,21 @@ for entry in folders:
             band = clipped.GetRasterBand(1)
             arr = band.ReadAsArray().astype(float)
 
-            # ------------------------------------------------
-            # CLEAN NDVI VALUES (MODIS-APPROPRIATE)
-            # ------------------------------------------------
-            arr[(arr < -0.2) | (arr > 1.0)] = np.nan
+            # ------------------------
+            # CLEAN NDVI
+            # ------------------------
+            arr[arr <= 0] = np.nan
 
             if np.all(np.isnan(arr)):
                 median_ndvi = np.nan
             else:
                 median_ndvi = float(np.nanmedian(arr))
 
-            print(f"{sensor} | {date_str} → Median NDVI = {median_ndvi}")
+            print(f"{sensor} | {date_str} → {median_ndvi}")
 
-            # ------------------------------------------------
-            # ADD FEATURE TO MEMORY TABLE
-            # ------------------------------------------------
+            # ------------------------
+            # ADD FEATURE
+            # ------------------------
             feature = QgsFeature()
             feature.setAttributes([
                 date_str,
@@ -113,14 +104,13 @@ for entry in folders:
                 median_ndvi,
                 sensor
             ])
-
             pr.addFeature(feature)
 
         except Exception as e:
-            print(f"❌ Error processing {file}: {e}")
+            print("❌ Error:", file, e)
 
-# ============================================================
-# ADD RESULT LAYER TO QGIS
-# ============================================================
+# ------------------------
+# ADD TO QGIS
+# ------------------------
 QgsProject.instance().addMapLayer(layer)
-print("✅ AOI-based MODIS Median NDVI table created successfully")
+print("✅ AOI-based NDVI table created successfully")

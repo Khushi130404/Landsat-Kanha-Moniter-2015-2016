@@ -24,8 +24,8 @@ for qa_file in os.listdir(qa_dir):
     base = qa_file.split("_QA_PIXEL")[0]
 
     qa_path  = os.path.join(qa_dir, qa_file)
-    red_path = os.path.join(red_dir, f"{base}_SR_B3.tif")
-    nir_path = os.path.join(nir_dir, f"{base}_SR_B4.tif")
+    red_path = os.path.join(red_dir, f"{base}_SR_B4.tif")
+    nir_path = os.path.join(nir_dir, f"{base}_SR_B5.tif")
 
     if not (os.path.exists(red_path) and os.path.exists(nir_path)):
         print(f"❌ Skipping {base} (missing RED/NIR)")

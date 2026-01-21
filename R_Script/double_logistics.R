@@ -21,9 +21,9 @@ library(zoo)
 # -----------------------------
 # 2. Input / Output folders
 # -----------------------------
-input_dir  <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_8_9/data_raw"
-output_dir <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_8_9/data_interpolated"
-plot_dir   <- "D:/Landsat_Kanha_Moniter_2015_2016/image/Landsat_8_9/plot_double_logistic"
+input_dir  <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_7/data_raw"
+output_dir <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_7/data_interpolated"
+plot_dir   <- "D:/Landsat_Kanha_Moniter_2015_2016/image/Landsat_7/plot_double_logistic"
 
 if(!dir.exists(output_dir)) dir.create(output_dir, recursive=TRUE)
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive=TRUE)

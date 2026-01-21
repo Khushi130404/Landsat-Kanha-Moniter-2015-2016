@@ -20,8 +20,8 @@ library(ggplot2)
 # -----------------------------
 # 2. Input / Output folders
 # -----------------------------
-input_dir <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_8_9/data_raw"
-plot_dir  <- "D:/Landsat_Kanha_Moniter_2015_2016/image/Landsat_8_9/plot_raw"
+input_dir <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_7/data_raw"
+plot_dir  <- "D:/Landsat_Kanha_Moniter_2015_2016/image/Landsat_7/plot_raw"
 
 if(!dir.exists(plot_dir)) dir.create(plot_dir, recursive=TRUE)
 

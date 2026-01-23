@@ -8,8 +8,8 @@ library(lubridate)
 # -----------------------------
 # INPUT / OUTPUT FOLDERS
 # -----------------------------
-input_dir <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_7/data_interpolated"
-plot_dir  <- "D:/Landsat_Kanha_Moniter_2015_2016/image/Landsat_7/plot_interpolation"
+input_dir <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_8_9/data_interpolated"
+plot_dir  <- "D:/Landsat_Kanha_Moniter_2015_2016/image/Landsat_8_9/plot_interpolation"
 
 if (!dir.exists(plot_dir)) dir.create(plot_dir, recursive = TRUE)
 

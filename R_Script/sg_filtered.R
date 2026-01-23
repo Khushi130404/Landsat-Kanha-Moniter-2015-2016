@@ -14,9 +14,9 @@ for(p in pkgs){
 # -----------------------------
 # Input / Output folders
 # -----------------------------
-input_dir  <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_7/data_interpolated"
-output_dir <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_7/data_sg_smoothed"
-plot_dir   <- "D:/Landsat_Kanha_Moniter_2015_2016/image/Landsat_7/plot_sg_smoothed"
+input_dir  <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_8_9/data_interpolated"
+output_dir <- "D:/Landsat_Kanha_Moniter_2015_2016/Data_Table/Landsat_8_9/data_sg_smoothed"
+plot_dir   <- "D:/Landsat_Kanha_Moniter_2015_2016/image/Landsat_8_9/plot_sg_smoothed"
 
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)
 dir.create(plot_dir, recursive = TRUE, showWarnings = FALSE)
